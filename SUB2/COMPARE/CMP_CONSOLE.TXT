@@ -1,0 +1,6 @@
+create<엔터키>
+action http://127.0.0.1:8011/create?id=100a
+add<엔터키>
+action http://127.0.0.1:8012/add?id=100a&data=data0001
+fetch<엔터키>
+action http://127.0.0.1:8013/fetch

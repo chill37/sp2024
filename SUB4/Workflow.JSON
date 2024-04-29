@@ -1,0 +1,83 @@
+{
+  "workflow": {
+    "workflow1": {
+      "startFrom": "create",
+      "state": {
+        "create": {
+          "type": "action",
+          "url": "http://127.0.0.1:8011/create",
+          "parameters": [ "id" ],
+          "next": "add"
+        },
+        "add": {
+          "type": "action",
+          "url": "http://127.0.0.1:8012/add",
+          "parameters": [ "id", "key", "data" ],
+          "next": "fetch"
+        },
+        "fetch": {
+          "type": "action",
+          "url": "http://127.0.0.1:8013/fetch",
+          "parameters": [],
+          "next": "end"
+        }
+      },
+      "responses": [ "id", "total" ]
+    },
+    "workflow2": {
+      "startFrom": "create",
+      "state": {
+        "create": {
+          "type": "action",
+          "url": "http://127.0.0.1:9010/create",
+          "parameters": [ "queuesize" ],
+          "next": "add"
+        },
+        "add": {
+          "type": "parallel",
+          "branches": [
+            {
+              "startFrom": "getdata",
+              "state": {
+                "getdata": {
+                  "type": "action",
+                  "url": "http://127.0.0.1:9011/getdata",
+                  "parameters": [ "id" ],
+                  "next": "adddata"
+                },
+                "adddata": {
+                  "type": "action",
+                  "url": "http://127.0.0.1:9012/adddata",
+                  "parameters": [ "queueid", "data" ],
+                  "next": "end"
+                }
+              },
+              "responses": []
+            },
+            {
+              "startFrom": "addmedia",
+              "state": {
+                "addmedia": {
+                  "type": "action",
+                  "url": "http://127.0.0.1:9013/addmedia",
+                  "parameters": [ "queueid", "mediaid" ],
+                  "next": "end"
+                }
+              },
+              "responses": []
+            }
+          ],
+          "next": "report"
+        },
+        "report": {
+          "type": "action",
+          "url": "http://127.0.0.1:9014/report",
+          "parameters": [ "result", "errorcode", "queuetotal" ],
+          "next": "end"
+        }
+        
+      },
+      "responses": [ "queueid", "queuetotal", "result" ]
+    }
+  }
+}
